@@ -37,10 +37,12 @@ def readlineCR(ser):
 					
 					row = cur.fetchone()
 					row1 = str(row[0])
-					row2 = str(row[1])
+					row2 = str(row[1]) 
+					n = reduce(lambda rst, d: rst + d, (row1,row2))
+
 					#print row1
 									
-					yield row1 + row2
+					yield n
 					
 
 			except MySQLdb.Error as DBIE:
@@ -51,16 +53,29 @@ def readlineCR(ser):
 
 
 a = readlineCR(ser)
+
 row1 = next(a)
 
 row2 =  next(a)
 
 row3 = next(a)
 
+
 result = row1+row2+row3+"n"
+
+print result
+#result2 = row3+"n"
+#print resultn = reduce(lambda rst, d: rst + d, (row1,row2,row3))
+#n = reduce(lambda rst, d: rst + d, (row1,row2,row3))
+#result = n + "n"
+
 #print result
+#result = row3 + "n"
+#r = hex(result)
+
 	
 ser.write(result)
+#ser.write(result2)
 ser.flushOutput()
 
 ser.close()
