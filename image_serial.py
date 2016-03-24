@@ -55,8 +55,11 @@ class GuiPart:
 		# self.combo_button = tk.Button(root, image=tk_img3, command = self.cr_mp_cr_hp, anchor = 'w',
 		#			width = 400, activebackground = "#33B5E5")
 		# self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)	
-                 item = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
-		 #func_uart.readlineCR(ser)	
+                 self.item3 = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
+		 #func_uart.readlineCR(ser)
+
+	def start_reaction(self):
+		self.canvas.delete(self.item3)	
 
 	def create_dialog(self):
 		
@@ -91,6 +94,7 @@ class GuiPart:
 					#subprocess.call(['sudo','/home/pi/project/func_uart.py'])
 					#subprocess.call("./func_uart.py",shell=True)
 					subprocess.Popen(['sudo','python','./func_uart.py'])
+					self.start_reaction()
 					#func_uart.readlineCR(ser)
 					#print "poop"
 			except Queue.Empty:

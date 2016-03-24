@@ -63,7 +63,7 @@ row3 = next(a)
 
 result = row1+row2+row3+"n"
 
-print result
+#print result
 #result2 = row3+"n"
 #print resultn = reduce(lambda rst, d: rst + d, (row1,row2,row3))
 #n = reduce(lambda rst, d: rst + d, (row1,row2,row3))
@@ -72,11 +72,15 @@ print result
 #print result
 #result = row3 + "n"
 #r = hex(result)
-
-	
 ser.write(result)
 #ser.write(result2)
 ser.flushOutput()
+
+while 1:
+	dataInput = ser.read(11)
+	ser.flushInput()
+
+	print dataInput
 
 ser.close()
 
