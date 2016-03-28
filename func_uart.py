@@ -1,6 +1,7 @@
 import serial 
 import time
 import MySQLdb
+from decimal import *
 
 ser = serial.Serial(port = "/dev/ttyAMA0",
 				baudrate = 9600,
@@ -75,12 +76,14 @@ result = row1+row2+row3+"n"
 ser.write(result)
 #ser.write(result2)
 ser.flushOutput()
-
+ser.flushInput()
 while 1:
-	dataInput = ser.read(11)
+	dataInput = ser.read(10)
 	ser.flushInput()
-
-	print dataInput
+	if dataInput.encode('hex'): 
+		#d=int(Decimal(dataInput))
+		print dataInput
+		#print dataInput + "is string"
 
 ser.close()
 
