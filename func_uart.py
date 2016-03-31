@@ -4,6 +4,7 @@ import MySQLdb
 from decimal import *
 
 ser = serial.Serial(port = "/dev/ttyAMA0",
+
 				baudrate = 9600,
 				parity = serial.PARITY_NONE,
 				stopbits = serial.STOPBITS_ONE,
@@ -11,7 +12,13 @@ ser = serial.Serial(port = "/dev/ttyAMA0",
 				timeout = 1)
 
 db = MySQLdb.connect("localhost","root","root","framedata")
+
+
+db2 = MySQLdb.connect("localhost","stewie3540","root","reaction")
+
 cur = db.cursor()
+cur2 = db2.cursor()
+
 List = []
 result = ""
 a=""
@@ -21,14 +28,14 @@ def readlineCR(ser):
 		data = ser.read(11)
 		ser.flushInput()
 
-		print data		
+		#print data		
 
 		#words = data.split()
 		#print data
 
 		if data  == "CR_MP CR_HP":
 			words = data.split()
-			sqlfind = 'SELECT %s, %s FROM STARTUP union SELECT %s, %s FROM ACTIVE union SELECT %s, %s FROM RECOVERY;' %(words[0] , words[1], words[0], words[1], words[0], words[1])
+			sqlfind = 'SELECT %s, %s FROM STARTUP union SELECT %s, %s FROM ACTIVE union SELECT %s, %s FROM RECOVERY;'  %(words[0] , words[1], words[0], words[1], words[0], words[1])
 			print sqlfind
 			try: 
 				cur.execute(sqlfind)
@@ -42,7 +49,7 @@ def readlineCR(ser):
 					n = reduce(lambda rst, d: rst + d, (row1,row2))
 
 					#print row1
-									
+					#ser.close()				
 					yield n
 					
 
@@ -64,27 +71,43 @@ row3 = next(a)
 
 result = row1+row2+row3+"n"
 
-#print result
-#result2 = row3+"n"
-#print resultn = reduce(lambda rst, d: rst + d, (row1,row2,row3))
-#n = reduce(lambda rst, d: rst + d, (row1,row2,row3))
-#result = n + "n"
 
-#print result
-#result = row3 + "n"
-#r = hex(result)
 ser.write(result)
-#ser.write(result2)
 ser.flushOutput()
 ser.flushInput()
+
 while 1:
-	dataInput = ser.read(10)
+	dataInput = ser.read(20)
 	ser.flushInput()
-	if dataInput.encode('hex'): 
+
+	if dataInput.isupper():
+		print "no numbers"
+	else:
+		line = dataInput.strip().split(',')
+		print line
+		try:
+			first = line[0]
+			second = line[1]
+		except IndexError:
+			continue
+			
+		print first , second
+	
+		sqlInsert = 'INSERT INTO CR_MP_CR_MP_CR_HK(CR_MP,CR_HK,TIMING,DATES) VALUES(%s,%s,CURTIME(),CURDATE())' %(first, second)
+		print sqlInsert
 		#d=int(Decimal(dataInput))
-		print dataInput
+		try:
+			print "Inserting data"
+			cur2.execute(sqlInsert)
+			db2.commit()
+			print "Data committed"
+
+		except MySQLdb.Error as dbie:
+			print dbie
+			db2.rollback
 		#print dataInput + "is string"
 
 ser.close()
 
 db.close()
+db2.close()
