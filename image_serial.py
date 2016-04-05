@@ -1,7 +1,11 @@
 
 import subprocess
+import os
+from subprocess import PIPE, STDOUT, Popen
+
 import threading
 import time
+from time import sleep
 #import func_uart
 from Tkinter import *
 import Tkinter
@@ -11,6 +15,7 @@ import random
 import Queue
 import serial
 import MySQLdb
+
  
 class GuiPart:
 	def __init__(self, master, queue, endCommand):
@@ -59,7 +64,8 @@ class GuiPart:
 		 #func_uart.readlineCR(ser)
 
 	def start_reaction(self):
-		self.canvas.delete(self.item3)	
+		self.canvas.delete(self.item3)
+		print "success"	
 
 	def create_dialog(self):
 		
@@ -77,28 +83,47 @@ class GuiPart:
 		quit_button = tk.Button(window2,image=igm4,command = self.quit, anchor = 'nw',
 				width =75,activebackground = "#33B5E5")
 		quit_button_window= canvas.create_window(20,20,anchor= 'w', window= quit_button)	
-
-
+	
+	
 
 	def processIncoming(self):
 		while self.queue.qsize():
 			try:
 				msg=self.queue.get(0)
+
 				print(msg)
+
 				if msg == 'Start':
 					#print msg
 					#execfile("func_uart.py")  
 					self.choose_combo()
 					#func_uart.readlineCR()
 				elif msg == 'Combo':
-					#subprocess.call(['sudo','/home/pi/project/func_uart.py'])
+					p=Popen(['sudo','python' , './func_uart.py'],stdin=PIPE,stdout=PIPE,stderr=PIPE)
 					#subprocess.call("./func_uart.py",shell=True)
-					subprocess.Popen(['sudo','python','./func_uart.py'])
+						
+						#print "nope"
+					for i in p.stdout.readline():
+
+						print "received: %s" % p.stdout.readline()
+						
+						words = p.stdout.readline().split()
+						print words[0]
+
+						if p.stdout.readline() == 'fail[' ']' or p.stdout.readline()=='fail':
+							print "poop"
+						
+  
 					self.start_reaction()
+				#elif msg == 'FAIL':
+					#print "poop"
 					#func_uart.readlineCR(ser)
+					#print "poop"
+				#elif msg == 'FAIL':
 					#print "poop"
 			except Queue.Empty:
 				pass
+
 
 
 class ThreadedClient:
@@ -130,7 +155,11 @@ class ThreadedClient:
 					    timeout = 1)
 			msg=ser.read(5)
 			ser.flushInput()
-			#if msg == "okgou":
+			#if msg=='FAIL':
+				#print "poop"
+
+			#if msg == "FAILURE":
+				#print "you suck"
 			#	print "hi"
 			#	if __name__ == '__main__':
 

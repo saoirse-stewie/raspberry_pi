@@ -2,6 +2,7 @@ import serial
 import time
 import MySQLdb
 from decimal import *
+import sys
 
 ser = serial.Serial(port = "/dev/ttyAMA0",
 
@@ -21,7 +22,7 @@ cur2 = db2.cursor()
 
 List = []
 result = ""
-a=""
+a={}
 def readlineCR(ser):
 	while 1:
 
@@ -53,10 +54,12 @@ def readlineCR(ser):
 					yield n
 					
 
-			except MySQLdb.Error as DBIE:
-				print DBIE 
-
-
+			#except MySQLdb.Error, e:
+				
+				 #print "MySQL Error [%d]: %s" % (e.args[0], e.args[1]) 
+			except NameError as e:
+				print e  
+				
 
 
 
@@ -76,31 +79,48 @@ ser.write(result)
 ser.flushOutput()
 ser.flushInput()
 
-while 1:
+count =0
+
+while count<5:
 	dataInput = ser.read(20)
 	ser.flushInput()
 
 	if dataInput.isupper():
-		print "no numbers"
+		print "fail"
+		sys.stdout.write('fail')
+		sys.stdout.flush()
+		
+		
+	elif dataInput<0:
+		
+		print "too slow"
 	else:
+		
 		line = dataInput.strip().split(',')
 		print line
 		try:
 			first = line[0]
 			second = line[1]
+			third = line[2]
+			fourth = line[3]
 		except IndexError:
 			continue
 			
-		print first , second
+		print first , second, third, fourth
 	
-		sqlInsert = 'INSERT INTO CR_MP_CR_MP_CR_HK(CR_MP,CR_HK,TIMING,DATES) VALUES(%s,%s,CURTIME(),CURDATE())' %(first, second)
-		print sqlInsert
+		sqlInsert = 'INSERT INTO CR_MP_CR_MP_CR_HK(CR_MP,CR_HK,CR_MP_FRAMES,CR_HK_FRAMES,TIMING,DATES) VALUES(%s,%s,%s,%s,CURTIME(),CURDATE())' %(first, second,third,fourth)
+		sys.stdout.write(sqlInsert)
+		sys.stdout.flush()
+
 		#d=int(Decimal(dataInput))
 		try:
-			print "Inserting data"
+			sys.stdout.write("Inserting data")
+			sys.stdout.flush()
+
 			cur2.execute(sqlInsert)
 			db2.commit()
 			print "Data committed"
+			count+=1
 
 		except MySQLdb.Error as dbie:
 			print dbie
