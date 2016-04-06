@@ -99,19 +99,42 @@ class GuiPart:
 					self.choose_combo()
 					#func_uart.readlineCR()
 				elif msg == 'Combo':
-					p=Popen(['sudo','python' , './func_uart.py'],stdin=PIPE,stdout=PIPE,stderr=PIPE)
+					#p=Popen(['sudo','python' , './func_uart.py'],stdin=PIPE,stdout=PIPE,stderr=PIPE,bufsize=1)
+					p = subprocess.Popen(['sudo','python','./func_uart.py'], stdout=subprocess.PIPE, stderr= subprocess.PIPE)
 					#subprocess.call("./func_uart.py",shell=True)
+					
+					#for line in iter(p.stdout.readline, b''):
+
+						#print line,
+					#p.stdout.close()
+				#	p.wait()
+					while True:
+						out = p.stdout.read(4)
 						
+						if out ==  '' and p.poll() is not None:
+							break
+						
+						if out:
+							print out
+				
+						#if out == "fail":
+							#print "yay"	
 						#print "nope"
-					for i in p.stdout.readline():
+					#for i in p.stdout.readline():
 
-						print "received: %s" % p.stdout.readline()
+						#if p.stdout.readline() == "fail" or p.stdout.readline()== "fail[' ']":
+	#						print "poop"
+						#print "received: %s" % p.stdout.readline()
+					#	s = []
+					#	s = p.stdout.readline()
+
+					#	print s
 						
-						words = p.stdout.readline().split()
-						print words[0]
+					#	words = p.stdout.readline().split()
+						#print words[0]
 
-						if p.stdout.readline() == 'fail[' ']' or p.stdout.readline()=='fail':
-							print "poop"
+						#if s == "fail[' ']" or s=="fail":
+						#	print "poop"
 						
   
 					self.start_reaction()

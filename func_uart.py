@@ -37,7 +37,7 @@ def readlineCR(ser):
 		if data  == "CR_MP CR_HP":
 			words = data.split()
 			sqlfind = 'SELECT %s, %s FROM STARTUP union SELECT %s, %s FROM ACTIVE union SELECT %s, %s FROM RECOVERY;'  %(words[0] , words[1], words[0], words[1], words[0], words[1])
-			print sqlfind
+			#print sqlfind
 			try: 
 				cur.execute(sqlfind)
 
@@ -86,8 +86,8 @@ while count<5:
 	ser.flushInput()
 
 	if dataInput.isupper():
-		print "fail"
-		sys.stdout.write('fail')
+		#print "fail"
+		sys.stdout.write("fail")
 		sys.stdout.flush()
 		
 		
@@ -97,7 +97,7 @@ while count<5:
 	else:
 		
 		line = dataInput.strip().split(',')
-		print line
+		#print line
 		try:
 			first = line[0]
 			second = line[1]
@@ -106,20 +106,20 @@ while count<5:
 		except IndexError:
 			continue
 			
-		print first , second, third, fourth
+		#print first , second, third, fourth
 	
 		sqlInsert = 'INSERT INTO CR_MP_CR_MP_CR_HK(CR_MP,CR_HK,CR_MP_FRAMES,CR_HK_FRAMES,TIMING,DATES) VALUES(%s,%s,%s,%s,CURTIME(),CURDATE())' %(first, second,third,fourth)
-		sys.stdout.write(sqlInsert)
-		sys.stdout.flush()
+		#sys.stdout.write(sqlInsert)
+		#sys.stdout.flush()
 
 		#d=int(Decimal(dataInput))
 		try:
-			sys.stdout.write("Inserting data")
-			sys.stdout.flush()
+			#sys.stdout.write("Inserting data")
+			#sys.stdout.flush()
 
 			cur2.execute(sqlInsert)
 			db2.commit()
-			print "Data committed"
+			#print "Data committed"
 			count+=1
 
 		except MySQLdb.Error as dbie:
