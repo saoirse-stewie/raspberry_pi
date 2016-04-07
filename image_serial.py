@@ -32,11 +32,11 @@ class GuiPart:
 		self.item = self.canvas.create_image(125, 125, image=tk_img)
 		self.igm = PhotoImage(file="/home/pi/project/Start.gif")
 		master.image = self.igm;
-		#self.item2 = self.canvas.create_image(400,300, image = self.igm, anchor='s')
+		self.item2 = self.canvas.create_image(400,300, image = self.igm, anchor='s')
 
-		self.start_button = tk.Button(master, image=self.igm, command = self.choose_combo, anchor = 'nw',
-                	width = 175, activebackground = "#33B5E5")
-		self.start_button_window = self.canvas.create_window(450, 250, anchor='center', window=self.start_button)
+		#self.start_button = tk.Button(master, image=self.igm, command = self.choose_combo, anchor = 'nw',
+                	#width = 175, activebackground = "#33B5E5")
+		#self.start_button_window = self.canvas.create_window(450, 250, anchor='center', window=self.start_button)
 		#self.start_button.destroy()
 
 	def choose_combo(self):
@@ -59,10 +59,10 @@ class GuiPart:
 		 FILENAME = "/home/pi/project/combo1.gif"
                  tk_img3= ImageTk.PhotoImage(file = FILENAME)
                  self.image=tk_img3
-		 self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
-					width = 600, activebackground = "#33B5E5")
-		 self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)	
-                 #self.item3 = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
+		 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+		#			width = 600, activebackground = "#33B5E5")
+		# self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)	
+                 self.item3 = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
 		 #func_uart.readlineCR(ser)
 
 	def start_reaction(self):
@@ -73,40 +73,52 @@ class GuiPart:
 
 	def count_down(self):
 		keepTrack= False
-		#print keepTrack
 		
-		#while counter<5:
-		#def count():
 		global counter
-		while counter<5:
+		while counter<=5:
 			
 			if counter == 0:
-                        	self.igm = PhotoImage(file="/home/pi/project/Start.gif")
+                        	self.igm = PhotoImage(file="/home/pi/project/6.png")
                         	self.image = self.igm;
-                        	self.item2 = self.canvas.create_image(400,300, image = self.image, anchor='s')
+                        	self.item2 = self.canvas.create_image(400,250, image = self.image, anchor=CENTER)
 
-			l = Label(root,text=str(counter),anchor = CENTER ,activebackground ="#33B5E5")
-			l.pack()
 			root.update()
 			time.sleep(1)
 			counter+=1
 			if counter == 1:
 				self.canvas.delete(self.item2)
-				FILENAME = "/home/pi/project/combo1.gif"
+				FILENAME = "/home/pi/project/2.png"
                 		tk_img3= ImageTk.PhotoImage(file = FILENAME)
                  		self.image=tk_img3
-				self.item3 = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
-		counter  = count()
-		#if counter == 0:
-			#self.igm = PhotoImage(file="/home/pi/project/Start.gif")
-               		#master.image = self.igm;
-               		#self.item2 = self.canvas.create_image(400,300, image = self.igm, anchor='s')
-		
+				self.item3 = self.canvas.create_image(400,250, image = tk_img3, anchor=CENTER)
+			elif counter ==2:
+				self.canvas.delete(self.item3)
+                                FILENAME = "/home/pi/project/3.png"
+                                tk_img4= ImageTk.PhotoImage(file = FILENAME)
+                                self.image=tk_img4
+                                self.item4 = self.canvas.create_image(400,250, image = tk_img4, anchor=CENTER)
+			elif counter ==3:
+                                self.canvas.delete(self.item4)
+                                FILENAME = "/home/pi/project/4.png"
+                                tk_img5= ImageTk.PhotoImage(file = FILENAME)
+                                self.image=tk_img5
+                                self.item5 = self.canvas.create_image(400,250, image = tk_img5, anchor=CENTER)
+			elif counter ==4:
+                                self.canvas.delete(self.item5)
+                                FILENAME = "/home/pi/project/5.png"
+                                tk_img6= ImageTk.PhotoImage(file = FILENAME)
+                                self.image=tk_img6
+                                self.item6 = self.canvas.create_image(400,250, image = tk_img6, anchor=CENTER)
+			else:	
+				self.canvas.delete(self.item6)
+	
 				
+		counter  = count()
+						
 
 	def create_dialog(self):
 		
-		FILENAME = "/home/pi/project/chun.png"
+		FILENAME = "/home/pi/project/chun.png" #TODO change picture, looks shit
 		window2 = tk.Toplevel(root)
 		canvas = tk.Canvas(window2,width=300, height =200)
 		canvas.pack()
@@ -131,22 +143,11 @@ class GuiPart:
 				print(msg)
 
 				if msg == 'Start':
-					#print msg
-					#execfile("func_uart.py")  
-					self.choose_combo()
-					#func_uart.readlineCR()
-				elif msg == 'Combo':
-					#self.start_reaction()
-					#self.count_down() 
-					#p=Popen(['sudo','python' , './func_uart.py'],stdin=PIPE,stdout=PIPE,stderr=PIPE,bufsize=1)
-					p = subprocess.Popen(['sudo','python','./func_uart.py'], stdout=subprocess.PIPE, stderr= subprocess.PIPE)
-					#subprocess.call("./func_uart.py",shell=True)
 					
-					#for line in iter(p.stdout.readline, b''):
-
-						#print line,
-					#p.stdout.close()
-				#	p.wait()
+					self.choose_combo()
+					
+				elif msg == 'Combo':
+					p = subprocess.Popen(['sudo','python','./func_uart.py'], stdout=subprocess.PIPE, stderr= subprocess.PIPE)
 					while True:
 						out = p.stdout.read(4)
 						
@@ -155,15 +156,7 @@ class GuiPart:
 						
 						if out:
 							print out
-				
-						#if out == "fail":
-							#print "yay"	
-						#print "nope"
-					#for i in p.stdout.readline():
-
-						#if p.stdout.readline() == "fail" or p.stdout.readline()== "fail[' ']":
-	#						print "poop"
-						#print "received: %s" % p.stdout.readline()
+					#print "received: %s" % p.stdout.readline()
 					#	s = []
 					#	s = p.stdout.readline()
 
