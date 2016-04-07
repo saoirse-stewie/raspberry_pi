@@ -2,7 +2,7 @@
 import subprocess
 import os
 from subprocess import PIPE, STDOUT, Popen
-
+from itertools import count 
 import threading
 import time
 from time import sleep
@@ -16,6 +16,7 @@ import Queue
 import serial
 import MySQLdb
 
+counter =0
  
 class GuiPart:
 	def __init__(self, master, queue, endCommand):
@@ -31,17 +32,18 @@ class GuiPart:
 		self.item = self.canvas.create_image(125, 125, image=tk_img)
 		self.igm = PhotoImage(file="/home/pi/project/Start.gif")
 		master.image = self.igm;
-		self.item2 = self.canvas.create_image(400,300, image = self.igm, anchor='s')
+		#self.item2 = self.canvas.create_image(400,300, image = self.igm, anchor='s')
 
-		#self.start_button = tk.Button(master, image=self.igm, command = self.choose_combo, anchor = 'nw',
-                #	width = 175, activebackground = "#33B5E5")
-		#self.start_button_window = self.canvas.create_window(450, 250, anchor='center', window=self.start_button)
+		self.start_button = tk.Button(master, image=self.igm, command = self.choose_combo, anchor = 'nw',
+                	width = 175, activebackground = "#33B5E5")
+		self.start_button_window = self.canvas.create_window(450, 250, anchor='center', window=self.start_button)
 		#self.start_button.destroy()
 
 	def choose_combo(self):
        		
- 		 self.canvas.delete(self.item2)
-		 
+ 		# self.canvas.delete(self.item2)
+		 self.start_button.destroy(); 
+		
 		 FILENAME = "/home/pi/project/choose_combo.gif"
         	 tk_img2= ImageTk.PhotoImage(file = FILENAME)
 		 self.image=tk_img2
@@ -57,15 +59,50 @@ class GuiPart:
 		 FILENAME = "/home/pi/project/combo1.gif"
                  tk_img3= ImageTk.PhotoImage(file = FILENAME)
                  self.image=tk_img3
-		# self.combo_button = tk.Button(root, image=tk_img3, command = self.cr_mp_cr_hp, anchor = 'w',
-		#			width = 400, activebackground = "#33B5E5")
-		# self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)	
-                 self.item3 = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
+		 self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+					width = 600, activebackground = "#33B5E5")
+		 self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)	
+                 #self.item3 = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
 		 #func_uart.readlineCR(ser)
 
 	def start_reaction(self):
-		self.canvas.delete(self.item3)
-		print "success"	
+		#self.canvas.delete(self.item3)
+		self.combo_button.destroy()
+		
+		self.count_down()
+
+	def count_down(self):
+		keepTrack= False
+		#print keepTrack
+		
+		#while counter<5:
+		#def count():
+		global counter
+		while counter<5:
+			
+			if counter == 0:
+                        	self.igm = PhotoImage(file="/home/pi/project/Start.gif")
+                        	self.image = self.igm;
+                        	self.item2 = self.canvas.create_image(400,300, image = self.image, anchor='s')
+
+			l = Label(root,text=str(counter),anchor = CENTER ,activebackground ="#33B5E5")
+			l.pack()
+			root.update()
+			time.sleep(1)
+			counter+=1
+			if counter == 1:
+				self.canvas.delete(self.item2)
+				FILENAME = "/home/pi/project/combo1.gif"
+                		tk_img3= ImageTk.PhotoImage(file = FILENAME)
+                 		self.image=tk_img3
+				self.item3 = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
+		counter  = count()
+		#if counter == 0:
+			#self.igm = PhotoImage(file="/home/pi/project/Start.gif")
+               		#master.image = self.igm;
+               		#self.item2 = self.canvas.create_image(400,300, image = self.igm, anchor='s')
+		
+				
 
 	def create_dialog(self):
 		
@@ -99,6 +136,8 @@ class GuiPart:
 					self.choose_combo()
 					#func_uart.readlineCR()
 				elif msg == 'Combo':
+					#self.start_reaction()
+					#self.count_down() 
 					#p=Popen(['sudo','python' , './func_uart.py'],stdin=PIPE,stdout=PIPE,stderr=PIPE,bufsize=1)
 					p = subprocess.Popen(['sudo','python','./func_uart.py'], stdout=subprocess.PIPE, stderr= subprocess.PIPE)
 					#subprocess.call("./func_uart.py",shell=True)
@@ -137,7 +176,7 @@ class GuiPart:
 						#	print "poop"
 						
   
-					self.start_reaction()
+					#self.start_reaction()
 				#elif msg == 'FAIL':
 					#print "poop"
 					#func_uart.readlineCR(ser)
