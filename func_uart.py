@@ -81,7 +81,7 @@ ser.flushInput()
 
 count =0
 
-while count<5:
+while count<=5:
 	dataInput = ser.read(20)
 	ser.flushInput()
 
@@ -95,7 +95,9 @@ while count<5:
 		
 		print "too slow"
 	else:
-		
+		#sys.stdout.write("succ")
+               # sys.stdout.flush()
+
 		line = dataInput.strip().split(',')
 		#print line
 		try:
@@ -116,16 +118,31 @@ while count<5:
 		try:
 			#sys.stdout.write("Inserting data")
 			#sys.stdout.flush()
+			sys.stdout.write("succ")
+                	sys.stdout.flush()
 
 			cur2.execute(sqlInsert)
 			db2.commit()
+			
 			#print "Data committed"
 			count+=1
 
+			if count == 4:
+				again =  sys.stdout.read(10)
+				#print again
+				if again == 'try again':
+					count=0
+					break
+			#sys.stdout.flush()
+			#sys.stdout.write(first)
+			
 		except MySQLdb.Error as dbie:
 			print dbie
 			db2.rollback
 		#print dataInput + "is string"
+#sys.stdin.read(10)
+#print sys.stdin.read(10)
+
 
 ser.close()
 

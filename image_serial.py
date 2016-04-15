@@ -41,8 +41,8 @@ class GuiPart:
 
 	def choose_combo(self):
        		
- 		# self.canvas.delete(self.item2)
-		 self.start_button.destroy(); 
+ 		 self.canvas.delete(self.item2)
+		# self.start_button.destroy(); 
 		
 		 FILENAME = "/home/pi/project/choose_combo.gif"
         	 tk_img2= ImageTk.PhotoImage(file = FILENAME)
@@ -66,8 +66,8 @@ class GuiPart:
 		 #func_uart.readlineCR(ser)
 
 	def start_reaction(self):
-		#self.canvas.delete(self.item3)
-		self.combo_button.destroy()
+		self.canvas.delete(self.item3)
+		#self.combo_button.destroy()
 		
 		self.count_down()
 
@@ -114,7 +114,44 @@ class GuiPart:
 	
 				
 		counter  = count()
-						
+	def failure(self):
+		
+		FILENAME = "/home/pi/project/fail.png"
+               	tk_img6= ImageTk.PhotoImage(file = FILENAME)
+               	self.image=tk_img6
+                self.item6 = self.canvas.create_image(400,250, image = tk_img6, anchor=CENTER,state=NORMAL)
+		root.update()
+                time.sleep(2)
+		return
+	
+	def deleteItem(self):
+		
+		self.canvas.itemconfig(self.item6, state=HIDDEN)
+		root.update()
+		time.sleep(2)
+		return
+ 		
+
+	def success(self):
+
+                FILENAME = "/home/pi/project/success.png"
+                tk_img7= ImageTk.PhotoImage(file = FILENAME)
+                self.image2=tk_img7
+                self.item2 = self.canvas.create_image(400,250, image = tk_img7, anchor=CENTER,state=NORMAL)
+                root.update()
+                time.sleep(2)
+                return
+
+        def deleteSuccess(self):
+                self.canvas.itemconfig(self.item2, state=HIDDEN)
+                root.update()
+                time.sleep(2)
+                return
+	
+	def try_again(self):
+		print "ok"
+
+					
 
 	def create_dialog(self):
 		
@@ -147,38 +184,49 @@ class GuiPart:
 					self.choose_combo()
 					
 				elif msg == 'Combo':
-					p = subprocess.Popen(['sudo','python','./func_uart.py'], stdout=subprocess.PIPE, stderr= subprocess.PIPE)
-					while True:
-						out = p.stdout.read(4)
-						
-						if out ==  '' and p.poll() is not None:
-							break
-						
-						if out:
-							print out
-					#print "received: %s" % p.stdout.readline()
-					#	s = []
-					#	s = p.stdout.readline()
+					state = False	
+					p = subprocess.Popen(['sudo','python','./func_uart.py'], stdout=subprocess.PIPE,stdin=subprocess.PIPE, stderr= subprocess.PIPE)
+					self.start_reaction()
+					test = 0
 
-					#	print s
+					while test <= 5:
+						test+=1
 						
-					#	words = p.stdout.readline().split()
-						#print words[0]
+						while True:
+							out = p.stdout.read(4)
+						
+							if out ==  '' and p.poll() is not None:
+								break
+						
+							if out:
+								if out == 'fail':
+									state = True
+									break
+								elif out == 'succ':
+									state = False
+									break
+								#elif out.isdigit():
+									#print out
+									#break
+						if state==True:
+							self.failure()
+							
+							self.deleteItem()
+						elif state == False:
+							self.success()
+							self.deleteSuccess()
+						if test==4:
+					
+							sys.stdout.write('try again')
+							test = 0 
 
-						#if s == "fail[' ']" or s=="fail":
-						#	print "poop"
+					#self.try_button = tk.Button(root, text= "try again?", command = self.try_again, anchor = 'w',
+                			 #                      width = 15, activebackground = "#33B5E5")
+                			#self.try_button_window = self.canvas.create_window(80,120,anchor='w', window= self.try_button)    
+
 						
-  
-					#self.start_reaction()
-				#elif msg == 'FAIL':
-					#print "poop"
-					#func_uart.readlineCR(ser)
-					#print "poop"
-				#elif msg == 'FAIL':
-					#print "poop"
 			except Queue.Empty:
 				pass
-
 
 
 class ThreadedClient:
