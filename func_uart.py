@@ -37,7 +37,7 @@ def readlineCR(ser):
 		if data  == "CR_MP CR_MP CR_HP" or data == "CR_LP CR_HP HU_HK":
 			words = data.split()
 			sqlfind = 'SELECT %s, %s, %s FROM STARTUP union SELECT %s, %s, %s FROM ACTIVE union SELECT %s, %s, %s  FROM RECOVERY;'  %(words[0] , words[1], words[2] , words[0], words[1],words[2], words[0], words[1], words[2])
-			print sqlfind
+			#print sqlfind
 			try: 
 				cur.execute(sqlfind)
 
@@ -74,7 +74,7 @@ row2 =  next(a)
 row3 = next(a)
 
 result = row1+row2+row3+"n"
-print result 
+#print result 
 
 ser.write(result)
 ser.flushOutput()
@@ -87,9 +87,16 @@ while count<=5:
 	ser.flushInput()
 
 	if dataInput.isupper():
-		#print "fail"
-		sys.stdout.write("fail")
-		sys.stdout.flush()
+		
+		if dataInput == "FAIL":
+			out = "fail"
+                        out = out  + "," + "Too fast" + "\n"
+                        print out
+                        out = " "
+
+			#print "fail"	
+			#sys.stdout.write("fail")
+			#sys.stdout.flush()
 		
 		
 	elif dataInput<0:
@@ -100,35 +107,61 @@ while count<=5:
                # sys.stdout.flush()
 
 		line = dataInput.strip().split(',')
-		print line
+		#print line
 		try:
 			first = line[0]
 			second = line[1]
 			third = line[2]
 			fourth = line[3]
 			fifth = line[4]
+		
 		except IndexError:
 			continue
 		if fifth == "cr_mp_cr_mp_cr_hk":	
-	
+			#sys.stdout.flush()
 			sqlInsert = 'INSERT INTO CR_MP_CR_MP_CR_HK(CR_MP,CR_HK,CR_MP_FRAMES,CR_HK_FRAMES,TIMING,DATES) VALUES(%s,%s,%s,%s,CURTIME(),CURDATE())' %(first, second,third,fourth)
 			try:
-		
-		
-				sys.stdout.write("succ")
-                		sys.stdout.flush()
+					
+				if float(first) <= 0.0333:
+					out = "succ"
+					out = out  + "," + first + "\n"
+					print out
+					out = " " 
+					#sys.stdout.write(out)
+                			#sys.stdout.flush()
+				else: 
+					out = "fail"
+					out = out + "," + first + "\n"
+					print out
+					out = " " 
+					#sys.stdout.write(out)
+					#sys.stdout.flush()
+					#sys.stdout.write(first)
+					#sys.stdout.flush()
+					#sys.write("fail")	
 
+				#if float(second) <= 0.01667:
+					#print "yes"	
+                                 	#sys.stdout.write("succ")
+                                  	#sys.stdout.flush()
+
+                               	#else:
+                                    	#print "no"    
+                                  #      sys.write("fail")
+				   # 	sys.stdout.flush()
+				#print sqlInsert
+			
 				cur2.execute(sqlInsert)
 				db2.commit()
 			
 				count+=1
 
-				if count == 4:
-					again =  sys.stdout.read(10)
+				#if count == 4:
+					#again =  sys.stdout.read(10)
 				
-					if again == 'try again':
-						count=0
-						break
+					#if again == 'try again':
+						#count=0
+						#break
 					
 			except MySQLdb.Error as dbie:
 				print dbie
@@ -148,12 +181,12 @@ while count<=5:
 
                                 count+=1
 
-                                if count == 4:
-                                        again =  sys.stdout.read(10)
+                               # if count == 4:
+                                     #   again =  sys.stdout.read(10)
 
-                                        if again == 'try again':
-                                                count=0
-                                                break
+                                      #  if again == 'try again':
+                                       #         count=0
+                                        #        break
 
                         except MySQLdb.Error as dbie:
                                 print dbie

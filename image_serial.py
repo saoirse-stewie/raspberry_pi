@@ -37,11 +37,26 @@ class GuiPart:
 		#self.start_button = tk.Button(master, image=self.igm, command = self.choose_combo, anchor = 'nw',
                 	#width = 175, activebackground = "#33B5E5")
 		#self.start_button_window = self.canvas.create_window(450, 250, anchor='center', window=self.start_button)
+	
+
 		#self.start_button.destroy()
+
+
+	def highLight(self):
+		self.canvas.delete(self.item2)
+                FILENAME = "/home/pi/project/combo2C.png"
+                tk_img4= ImageTk.PhotoImage(file = FILENAME)
+                self.image2=tk_img4
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                self.item4 = self.canvas.create_image(350,170, image = tk_img4, anchor=CENTER)
+
 
 	def choose_combo(self):
        		
  		 self.canvas.delete(self.item2)
+		 
 		# self.start_button.destroy(); 
 		
 		 FILENAME = "/home/pi/project/choose_combo.gif"
@@ -63,13 +78,28 @@ class GuiPart:
 		#			width = 600, activebackground = "#33B5E5")
 		# self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)	
                  self.item3 = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
+
+		 FILENAME = "/home/pi/project/combo2.png"
+                 tk_img4= ImageTk.PhotoImage(file = FILENAME)
+                 self.image2=tk_img4
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                 self.item4 = self.canvas.create_image(350,170, image = tk_img4, anchor=CENTER)
+
+		
+
 		 #func_uart.readlineCR(ser)
+	
+
 
 	def start_reaction(self):
 		self.canvas.delete(self.item3)
-		#self.combo_button.destroy()
+		self.canvas.delete(self.item4)
+		
 		
 		self.count_down()
+		return
 
 	def count_down(self):
 		keepTrack= False
@@ -114,18 +144,24 @@ class GuiPart:
 	
 				
 		counter  = count()
-	def failure(self):
+	def failure(self, words):
 		
 		FILENAME = "/home/pi/project/fail.png"
                	tk_img6= ImageTk.PhotoImage(file = FILENAME)
                	self.image=tk_img6
                 self.item6 = self.canvas.create_image(400,250, image = tk_img6, anchor=CENTER,state=NORMAL)
+		#print words
+		self.e = Entry(root)
+		self.e.place(x=410,y=280)
+		#e.pack()
+		#e.delete(0,END)
+		self.e.insert(0,words)
 		root.update()
                 time.sleep(2)
 		return
 	
 	def deleteItem(self):
-		
+		#self.e.delete()
 		self.canvas.itemconfig(self.item6, state=HIDDEN)
 		root.update()
 		time.sleep(2)
@@ -182,43 +218,61 @@ class GuiPart:
 				if msg == 'Start':
 					
 					self.choose_combo()
-					
-				elif msg == 'Combo':
-					state = False	
-					p = subprocess.Popen(['sudo','python','./func_uart.py'], stdout=subprocess.PIPE,stdin=subprocess.PIPE, stderr= subprocess.PIPE)
-					self.start_reaction()
+				
+				elif msg == 'highL':
+					self.highLight()
+						
+				elif msg == 'combo':
+					state = 1
+					self.start_reaction()	
+					p = subprocess.Popen(['sudo','python','-u','./func_uart.py'],stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+					#self.start_reaction()
 					test = 0
+					
+					for line in p.stdout.readline():
+						#print line
+					#print p.stdout.readline()	
+					
+						#state = False
 
-					while test <= 5:
-						test+=1
-						
 						while True:
-							out = p.stdout.read(4)
+						#for line in io.TextIOWrapper(p.stdout,encoding="utf-8"):
+							#out = p.stdout.read(12)
+							out = p.stdout.readline()
+							p.stdout.flush()
 						
-							if out ==  '' and p.poll() is not None:
+												
+													
+							if out ==  '' and p.poll() is not None:							
 								break
 						
 							if out:
-								if out == 'fail':
-									state = True
+								words = out.split(",")
+								print words	
+								
+								if words[0] == 'fail':
+									state = 2
 									break
-								elif out == 'succ':
-									state = False
+								elif words[0] == 'succ':
+									state = 3
 									break
-								#elif out.isdigit():
-									#print out
-									#break
-						if state==True:
-							self.failure()
-							
+								elif float(words[1]).isdigit():
+									print out
+									break
+						rc = p.poll()
+						
+						if state==2:
+							self.failure(words[1])
 							self.deleteItem()
-						elif state == False:
+						elif state == 3:
 							self.success()
 							self.deleteSuccess()
-						if test==4:
+						state = 1
+							#state = True
+						#if test==4:
 					
-							sys.stdout.write('try again')
-							test = 0 
+							#sys.stdout.write('try again')
+							#test = 0 
 
 					#self.try_button = tk.Button(root, text= "try again?", command = self.try_again, anchor = 'w',
                 			 #                      width = 15, activebackground = "#33B5E5")
@@ -258,7 +312,12 @@ class ThreadedClient:
 					    timeout = 1)
 			msg=ser.read(5)
 			ser.flushInput()
-			#if msg=='FAIL':
+			
+			if msg=='combo':
+				#time.sleep(0)
+				self.running=0
+				#self.thread1.sleep()
+				#time.sleep(10)
 				#print "poop"
 
 			#if msg == "FAILURE":
