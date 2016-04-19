@@ -144,24 +144,31 @@ class GuiPart:
 	
 				
 		counter  = count()
-	def failure(self, words):
+	def failure(self, words, words2, words3, words4):
 		
 		FILENAME = "/home/pi/project/fail.png"
                	tk_img6= ImageTk.PhotoImage(file = FILENAME)
                	self.image=tk_img6
                 self.item6 = self.canvas.create_image(400,250, image = tk_img6, anchor=CENTER,state=NORMAL)
 		#print words
-		self.e = Entry(root)
+		self.e = Text(self.canvas,height=10,width=30,state=NORMAL)
 		self.e.place(x=410,y=280)
-		#e.pack()
+		#self.e.geometry('30x30')
+		#self.e.pack(expand=YES)
 		#e.delete(0,END)
-		self.e.insert(0,words)
+		self.e.insert(END,"Time Taken in Seconds: "+ words)
+		self.e.insert(END, "\nTIme Taken in Seconds: " +words2);
+		self.e.insert(END, "\nFrames:" + words3 )
+		self.e.insert(END, "\nFrames: " +  words4 )
+
 		root.update()
                 time.sleep(2)
 		return
 	
 	def deleteItem(self):
-		#self.e.delete()
+		#self.e.config(state=DISABLED)
+		self.e.destroy()
+		root.update()
 		self.canvas.itemconfig(self.item6, state=HIDDEN)
 		root.update()
 		time.sleep(2)
@@ -224,9 +231,9 @@ class GuiPart:
 						
 				elif msg == 'combo':
 					state = 1
-					self.start_reaction()	
+					#self.start_reaction()	
 					p = subprocess.Popen(['sudo','python','-u','./func_uart.py'],stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-					#self.start_reaction()
+					self.start_reaction()
 					test = 0
 					
 					for line in p.stdout.readline():
@@ -235,12 +242,13 @@ class GuiPart:
 					
 						#state = False
 
+					
 						while True:
 						#for line in io.TextIOWrapper(p.stdout,encoding="utf-8"):
 							#out = p.stdout.read(12)
 							out = p.stdout.readline()
 							p.stdout.flush()
-						
+							print out
 												
 													
 							if out ==  '' and p.poll() is not None:							
@@ -248,21 +256,23 @@ class GuiPart:
 						
 							if out:
 								words = out.split(",")
-								print words	
+								#print words[0],words[1],words[2]	
 								
 								if words[0] == 'fail':
 									state = 2
+									time.sleep(0.5)
+									#print words[0], words[1]
 									break
 								elif words[0] == 'succ':
 									state = 3
 									break
-								elif float(words[1]).isdigit():
-									print out
-									break
+							#	elif float(words[1]).isdigit():
+								#	print out
+								#	break
 						rc = p.poll()
 						
 						if state==2:
-							self.failure(words[1])
+							self.failure(words[1],words[2],words[3],words[4])
 							self.deleteItem()
 						elif state == 3:
 							self.success()

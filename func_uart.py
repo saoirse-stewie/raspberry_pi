@@ -21,6 +21,7 @@ cur = db.cursor()
 cur2 = db2.cursor()
 
 List = []
+l=[]
 result = ""
 a={}
 def readlineCR(ser):
@@ -90,7 +91,7 @@ while count<=5:
 		
 		if dataInput == "FAIL":
 			out = "fail"
-                        out = out  + "," + "Too fast" + "\n"
+                        out = out  + "," + "Too fast" + "," +  "poop"
                         print out
                         out = " "
 
@@ -114,6 +115,9 @@ while count<=5:
 			third = line[2]
 			fourth = line[3]
 			fifth = line[4]
+
+			test = first+second
+		#	print test.rstrip("\n")
 		
 		except IndexError:
 			continue
@@ -121,39 +125,78 @@ while count<=5:
 			#sys.stdout.flush()
 			sqlInsert = 'INSERT INTO CR_MP_CR_MP_CR_HK(CR_MP,CR_HK,CR_MP_FRAMES,CR_HK_FRAMES,TIMING,DATES) VALUES(%s,%s,%s,%s,CURTIME(),CURDATE())' %(first, second,third,fourth)
 			try:
+				out = " "
+				
+				two_frame = 2
+				one_frame = 1				
+						
+				if float(first) <= 0.0333 and float(second) <= 0.01667:
+                                       	out = "succ,"
+
+					two_frame -= int(third)
+					one_frame -= int(fourth)
 					
-				if float(first) <= 0.0333:
-					out = "succ"
-					out = out  + "," + first + "\n"
-					print out
-					out = " " 
-					#sys.stdout.write(out)
-                			#sys.stdout.flush()
-				else: 
-					out = "fail"
-					out = out + "," + first + "\n"
-					print out
-					out = " " 
-					#sys.stdout.write(out)
-					#sys.stdout.flush()
-					#sys.stdout.write(first)
-					#sys.stdout.flush()
-					#sys.write("fail")	
+					out +=  first + second + str(two_frame) + "," + str(one_frame)  
+					
+                                        out = out.replace('\n',',').replace('\r',' ')
+					print out.rstrip(',')
+					out = " "
+                                        
+                                elif float(first) > 0.0333 and float(second) <= 0.01667:
+                                        out = "fail,"
+                                        #out +=  first + second
+					
+					
+					two_frame -= int(third)
+                                        one_frame -= int(fourth)
 
-				#if float(second) <= 0.01667:
-					#print "yes"	
-                                 	#sys.stdout.write("succ")
-                                  	#sys.stdout.flush()
+                                        out +=  first + second + str(two_frame) + "," +str(one_frame)
 
-                               	#else:
-                                    	#print "no"    
-                                  #      sys.write("fail")
-				   # 	sys.stdout.flush()
-				#print sqlInsert
-			
+
+                                        #out = out.replace('\n',',').replace('\r',',')
+
+					out = out.replace('\n',',').replace('\r',' ')
+					print out.rstrip(',')
+					out = " "
+
+				elif float(first) <= 0.0333 and float(second) > 0.01667:
+                                        
+					out = "fail,"
+                                        #out +=  first + second
+					
+                                        two_frame -= int(third)
+                                        one_frame -= int(fourth)
+
+                                        out +=  first + second + str(two_frame) + "," +  str(one_frame)
+
+
+                                        
+					out = out.replace('\n',',').replace('\r',' ')
+
+                                        print out.rstrip(',')
+						
+                                        out = " "
+
+                                elif float(first) > 0.0333 and float(second) > 0.01667:
+                                        out =  "fail,"
+                                        #out += first    + second
+					two_frame -= int(third)
+                                        
+                                        one_frame -= int(fourth)
+
+                                        out +=  first + second + str(two_frame) + "," +str(one_frame)
+
+
+					out = out.replace('\n',',').replace('\r',' ')
+
+                                        #print out.rstrip("\n") out = out + "," + first +  second +  "\n"
+                                        print out.rstrip(',')
+					out = " "
+
 				cur2.execute(sqlInsert)
-				db2.commit()
-			
+                                db2.commit()
+
+
 				count+=1
 
 				#if count == 4:
