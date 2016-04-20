@@ -192,7 +192,27 @@ class GuiPart:
                 return
 	
 	def try_again(self):
-		print "ok"
+		FILENAME = "/home/pi/project/TRY.png"
+                tk_img7= ImageTk.PhotoImage(file = FILENAME)
+                self.image2=tk_img7
+                self.item2 = self.canvas.create_image(400,250, image = tk_img7, anchor=CENTER,state=NORMAL)
+                root.update()
+		
+		FILENAME = "/home/pi/project/go.png"
+                tk_img8= ImageTk.PhotoImage(file = FILENAME)
+                self.image3=tk_img8
+                self.item3 = self.canvas.create_image(300,300, image = tk_img8, anchor=CENTER,state=NORMAL)
+                root.update()
+
+	
+		FILENAME = "/home/pi/project/no.png"
+                tk_img9= ImageTk.PhotoImage(file = FILENAME)
+                self.image4=tk_img9
+                self.item4 = self.canvas.create_image(450,300, image = tk_img9, anchor=CENTER,state=NORMAL)
+                root.update()
+
+		time.sleep(5)
+
 
 					
 
@@ -278,6 +298,8 @@ class GuiPart:
 							self.success()
 							self.deleteSuccess()
 						state = 1
+					
+					self.try_again()
 							#state = True
 						#if test==4:
 					
