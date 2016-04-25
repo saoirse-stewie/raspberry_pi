@@ -29,8 +29,9 @@ def readlineCR(ser):
 
 		data = ser.read(17)
 		ser.flushInput()
-		#print data
-		if data  == "CR_MP CR_MP CR_HP" or data == "CR_LP CR_HP HU_HK":
+		
+		print data
+		if data  == "CR_MP CR_MP CR_HP" or data == "CR_LP ST_LP CL_LP":
 			words = data.split()
 			sqlfind = 'SELECT %s, %s, %s FROM STARTUP union SELECT %s, %s, %s FROM ACTIVE union SELECT %s, %s, %s  FROM RECOVERY;'  %(words[0] , words[1], words[2] , words[0], words[1],words[2], words[0], words[1], words[2])
 		
@@ -63,17 +64,18 @@ def readlineCR(ser):
 def reaction_record(state):
 	count =0
 	while count<=5:
-		dataInput = ser.read(37)
+		dataInput = ser.read(50)
 		ser.flushInput()
-		
+		print dataInput
 			
+
 		state = 0
 		if dataInput.isupper():
 			
 			if dataInput == "FAIL":
 				out = "fail"
                        		out = out  + "," + "Too fast" + "," +  "poop" + "," + "blah" + "," +"fix"
-                       		print out
+                       		#print out
                         	out = " " 
 				count+=1
 		
@@ -91,97 +93,132 @@ def reaction_record(state):
 				fourth = line[3]
 				fifth = line[4]
 
-				test = first+second
+				#print first, second, third, fourth, fifth
 	
 		
 			except IndexError:
 				continue
+
 			if fifth == "cr_mp_cr_mp_cr_hk":	
 			
 				sqlInsert = 'INSERT INTO CR_MP_CR_MP_CR_HK(CR_MP,CR_HK,CR_MP_FRAMES,CR_HK_FRAMES,TIMING,DATES) VALUES(%s,%s,%s,%s,CURTIME(),CURDATE())' %(first, second,third,fourth)
 				try:
 					out = " "
-				
+					stats = " "
 					two_frame = 2
 					one_frame = 1
 
+					
+
+
+					third = round(float(third))
+					fourth = round(float(fourth))
+
+					print third,fourth
 								
-						
-					if float(first) <= 0.0333 and float(second) <= 0.01667:
+ 				
+					if int(first)<= 41 and int(first) > 0 and int(second) <= 19 and int(second) > 0:
                                        		out = "succ,"
 
-						two_frame -= int(third)
-						one_frame -= int(fourth)
+						two_frame = two_frame - int(third)
+						one_frame = one_frame - int(fourth)
 					
-						out +=  first + second + str(two_frame) + "," + str(one_frame)  
-					
+
+						if two_frame<0:
+                                                        two_frame *= -1
+                                                elif one_frame<0:
+                                                        one_frame *=-1
+
+						out +=  first + "," + second + "," + str(two_frame) + "," + str(one_frame) 
+						stats += out
+
                                         	out = out.replace('\n',',').replace('\r',' ')
 						print out.rstrip(',')
 						out = " "
+
+					elif int(first) < 0 or int(second) < 0:
+					        out = "fail,"
                                         
-            
-					elif float(first) > 0.0333 and float(second) <= 0.01667:
-                                        	out = "fail,"
-                                        
+				
 					
-					
-						two_frame -= int(third)
-                                        	one_frame -= int(fourth)
+						two_frame =  two_frame- int(third)
+                                        	one_frame = one_frame - int(fourth)
 
-                                        	out +=  first + second + str(two_frame) + "," +str(one_frame)
+						if two_frame<0:
+                                                        two_frame *= -1
+                                                elif one_frame<0:
+                                                        one_frame *=-1
 
 
-                                        
+                                       		#out +=  first + "," + second + "," + str(two_frame) + "," + str(one_frame)
+						if int(first) <= 41  and int(first) > 0  and int(second) < 0:	
+							out += first + "," + "Sucess," + second + "," + "too fast," + str(two_frame) + "," +str(one_frame)
+							stats += out
 
+						elif int(second) <=19 and int(second) > 0 and int(first) < 0:
+							out += first + "," + "too fast," + second+ "," + "Success," + str(two_frame) +"," + str(one_frame)
+
+							stats += out
+
+						else:
+							out += first + "," + "too fast," + second + "," + "too fast," + str(two_frame) +","+ str(one_frame)
+							stats += out
+
+						
 						out = out.replace('\n',',').replace('\r',' ')
 						print out.rstrip(',')
-						out = " "
+				           	out = " "
 
-					elif float(first) <= 0.0333 and float(second) > 0.01667:
-                                        	out = "fail,"
+
+					elif int(first) > 41 or int(second) > 19:
+                                        	out = "block,"
                                         
-						two_frame -= int(third)
-                                        	one_frame -= int(fourth)
+						two_frame = two_frame - int(third)
+						one_frame = one_frame - int(fourth)
 
-                                        	out +=  first + second + str(two_frame) + "," +  str(one_frame)
+						if two_frame<0:
+							two_frame *= -1
+						elif one_frame<0:
+							one_frame *=-1
+
+                                        	#out +=  first + ","  + second + "," + str(two_frame) + "," + str(one_frame)
+
+						if int(first) <= 41  and int(first) > 0  and int(second) > 19:
+                                                        out += first + "," + "Success," + second + "," + "too slow," + str(two_frame) + "," +str(one_frame)
+							stats += out
+
+                                                elif int(second) <= 19 and int(second) > 0 and int(first) > 41 :
+                                                        out += first + "," + "too slow," + second+ "," + "Success," + str(two_frame) +"," + str(one_frame)
+							stats += out
+
+                                                else:
+                                                        out += first + "," + "too slow," + second + "," + "too slow," + str(two_frame) +","+ str(one_frame)
+							stats += out
 
 
-                                        
 						out = out.replace('\n',',').replace('\r',' ')
 
                                         	print out.rstrip(',')
 						
                                         	out = " "
+						#print stats
 
-                                	elif float(first) > 0.0333 and float(second) > 0.01667:
-                                        	out =  "fail,"
-                                        
-						two_frame -= int(third)
-                                        
-                                        	one_frame -= int(fourth)
-
-                                        	out +=  first + second + str(two_frame) + "," +str(one_frame)
-
-
-						out = out.replace('\n',',').replace('\r',' ')
-
-                                        
-                                        	print out.rstrip(',')
-						out = " "
 
 					cur2.execute(sqlInsert)
                                 	db2.commit()
 
 
 					count+=1
+					#return stats
 				
 									
 				except MySQLdb.Error as dbie:
 					print dbie
 					db2.rollback
-			elif fifth == "cr_lp_cr_hp_hu_hk":
 
-                        	sqlInsert = 'INSERT INTO CR_LP_CR_HP_HU_HK(CR_LP,CR_HP,CR_LP_FRAMES,CR_HP_FRAMES,TIMING,DATES) VALUES(%s,%s,%s,%s,CURTIME(),CURDATE())' %(first,second,third,fourth)
+			elif fifth == "cr_lp_s_lp_cr_oks":
+
+                        	sqlInsert = 'INSERT INTO CR_LP_S_LP(CR_LP,S_LP,CR_LP_FRAMES,S_LP_FRAMES,TIMING,DATES) VALUES(%s,%s,%s,%s,CURTIME(),CURDATE())' %(first,second,third,fourth)
                         	try:
 			
 					out = " "
@@ -189,73 +226,55 @@ def reaction_record(state):
                                         two_frame = 2
                                         one_frame = 1
 
-					if float(first) <= 0.0333 and float(second) <= 0.01667:
+					
+					if int(first)<= 61 and int(first) > 0:
                                                 out = "succ,"
 
-                                                two_frame -= int(third)
-                                                one_frame -= int(fourth)
+                                                two_frame = two_frame - float(third)
+                                                one_frame = one_frame - float(fourth)
 
-                                                out +=  first + second + str(two_frame) + "," + str(one_frame)
+                                                out +=  first + "," + "N/A" + "," + str(two_frame) + "," + "N/A"
 
                                                 out = out.replace('\n',',').replace('\r',' ')
                                                 print out.rstrip(',')
                                                 out = " "
 
-					elif float(first) > 0.0333 and float(second) <= 0.01667:
+
+
+					elif int(first) < 0:
                                                 out = "fail,"
 
+                                                #if int(first) > 0 :
 
 
-                                                two_frame -= int(third)
-                                                one_frame -= int(fourth)
+                                                two_frame =  two_frame- float(third)
+                                                one_frame = one_frame - float(fourth)
 
-                                                out +=  first + second + str(two_frame) + "," +str(one_frame)
-
-			
-
+                                                out +=  first + "," + "N/A" + "," + str(two_frame) + "," + "N/A"
+                                                
 
                                                 out = out.replace('\n',',').replace('\r',' ')
                                                 print out.rstrip(',')
                                                 out = " "
-			
 
-					elif float(first) <= 0.0333 and float(second) > 0.01667:
-						out = "fail,"
+					elif int(first) > 61:
+                                                out = "block,"
 
+                                                two_frame = two_frame - float(third)
+                                                one_frame = one_frame - float(fourth)
 
-                                                two_frame -= int(third)
-                                                one_frame -= int(fourth)
+                                                out +=  first + ","  + "N/A" + "," + str(two_frame) + "," + "N/A"
 
-                                                out +=  first + second + str(two_frame) + "," +  str(one_frame)
-
-
+                                                
 
                                                 out = out.replace('\n',',').replace('\r',' ')
 
                                                 print out.rstrip(',')
 
                                                 out = " "
-			
-					
 
-					elif float(first) > 0.0333 and float(second) > 0.01667:
-                                                out =  "fail,"
-
-                                                two_frame -= int(third)
-
-                                                one_frame -= int(fourth)
-
-                                                out +=  first + second + str(two_frame) + "," +str(one_frame)
-
-
-                                                out = out.replace('\n',',').replace('\r',' ')
-
-
-                                                print out.rstrip(',')
-                                                out = " "
-
-
-                                	cur2.execute(sqlInsert)
+	
+					cur2.execute(sqlInsert)
                                		db2.commit()
 
                                 	count+=1
@@ -264,7 +283,7 @@ def reaction_record(state):
 
                         	except MySQLdb.Error as dbie:
                                 	print dbie
-                                	db2.rollback
+ 	                             	db2.rollback
 
 #while True:
 	#try_again = ser.read(3)
@@ -287,7 +306,7 @@ row2 =  next(a)
 row3 = next(a)
 
 result = row1+row2+row3+"n"
-
+print result
 
 ser.write(result)
 ser.flushOutput()
@@ -297,6 +316,7 @@ reaction_record(0)
 print "start"
 count =0
 
+#print stat
 while True:
 
         try_again = ser.read(2)
@@ -310,8 +330,9 @@ while True:
                	count = 0
 		reaction_record(1)
 	elif try_again == "no":
-		count =0 
-		sys.exit()
+		print "no"
+		#count =0 
+		#sys.exit()
                 #break
 
 

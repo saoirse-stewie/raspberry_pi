@@ -5,6 +5,7 @@ db = MySQLdb.connect("localhost", "stewie3540" , "root", "reaction")
 cursor = db.cursor()
 
 cursor.execute("DROP TABLE IF EXISTS CR_MP_CR_MP_CR_HK")
+cursor.execute("DROP TABLE IF EXISTS CR_LP_CR_HP_HU_HK")
 
 
 sql = """CREATE TABLE  CR_MP_CR_MP_CR_HK(
@@ -16,11 +17,11 @@ sql = """CREATE TABLE  CR_MP_CR_MP_CR_HK(
 	DATES DATE
 	)"""
 
-sql2 = """CREATE TABLE CR_LP_CR_HP_HU_HK(
+sql2 = """CREATE TABLE CR_LP_S_LP(
 	CR_LP FLOAT,
-	CR_HP FLOAT,
+	S_LP FLOAT,
 	CR_LP_FRAMES INT,
-	CR_HP_FRAMES INT,
+	S_LP_FRAMES INT,
 	TIMING TIME,
 	DATES DATE )"""
 	

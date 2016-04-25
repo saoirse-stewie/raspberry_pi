@@ -1,10 +1,10 @@
 
-import subprocess
-import os
-from subprocess import PIPE, STDOUT, Popen
+import subprocess 
+import os 
+from subprocess import PIPE, STDOUT, Popen 
 from itertools import count 
-import threading
-import time
+import threading 
+import time 
 from time import sleep
 #import func_uart
 from Tkinter import *
@@ -24,13 +24,13 @@ class GuiPart:
 		self.queue = queue
 		#console = Tkinter.Button(master, text='done',command=endCommand)	
 		#console.pack()
-		FILENAME = '/home/pi/project/Abel.png'
+		FILENAME = '/home/pi/project/ryu.jpg'
 		self.canvas = tk.Canvas(master, width=800, height=600)
 		self.canvas.pack()
 		tk_img = ImageTk.PhotoImage(file = FILENAME)
 		self.canvas.image = tk_img
-		self.item = self.canvas.create_image(125, 125, image=tk_img)
-		self.igm = PhotoImage(file="/home/pi/project/Start.gif")
+		self.item = self.canvas.create_image(320, 300, image=tk_img)
+		self.igm = PhotoImage(file="/home/pi/project/start.png")
 		master.image = self.igm;
 		self.item2 = self.canvas.create_image(400,300, image = self.igm, anchor='s')
 
@@ -48,10 +48,10 @@ class GuiPart:
 		 
 		# self.start_button.destroy(); 
 		
-		 FILENAME = "/home/pi/project/choose_combo.gif"
+		 FILENAME = "/home/pi/project/choose.png"
         	 tk_img2= ImageTk.PhotoImage(file = FILENAME)
 		 self.image=tk_img2
-        	 item = self.canvas.create_image(200,50, image = tk_img2, anchor='n')
+        	 self.item = self.canvas.create_image(200,50, image = tk_img2, anchor='n')
 
         	 igm2 = PhotoImage(file='/home/pi/project/menu.gif')
         	 root.image=igm2
@@ -60,39 +60,53 @@ class GuiPart:
                         width =10, activebackground = "#33B5E5")
         	 menu_button_window = self.canvas.create_window(10,10,anchor='nw', window= Menu_btn)
 
-		 FILENAME = "/home/pi/project/cr2.png"
+		 FILENAME = "/home/pi/project/bread+butter2.png"
                  tk_img3= ImageTk.PhotoImage(file = FILENAME)
                  self.image=tk_img3
 		 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
 		#			width = 600, activebackground = "#33B5E5")
-		# self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)	
+		# self.combo_buttonindow = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)	
                  self.item3 = self.canvas.create_image(80,120, image = tk_img3, anchor='w')
 
-		 FILENAME = "/home/pi/project/combo2.png"
+		 FILENAME = "/home/pi/project/cr lp.png"
                  tk_img4= ImageTk.PhotoImage(file = FILENAME)
                  self.image2=tk_img4
                  #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
                 #                       width = 600, activebackground = "#33B5E5")
                 # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
-                 self.item4 = self.canvas.create_image(350,170, image = tk_img4, anchor=CENTER)
+                 self.item4 = self.canvas.create_image(150,350, image = tk_img4, anchor='s')
 
+		 FILENAME = "/home/pi/project/sl lp.png"
+                 tk_img5= ImageTk.PhotoImage(file = FILENAME)
+                 self.image3=tk_img5
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                 self.item5 = self.canvas.create_image(150,450, image = tk_img5, anchor='s')
 		
 
 		 #func_uart.readlineCR(ser)
 	
 	def highLight(self):
-                self.canvas.delete(self.item2)
+                self.canvas.delete(self.item4)
 		self.canvas.delete(self.item3)
-		
-                FILENAME = "/home/pi/project/combo2C.png"
+		FILENAME = "/home/pi/project/cr lp2.png"
                 tk_img4= ImageTk.PhotoImage(file = FILENAME)
                 self.image2=tk_img4
                  #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
                 #                       width = 600, activebackground = "#33B5E5")
                 # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
-                self.item4 = self.canvas.create_image(350,170, image = tk_img4, anchor=CENTER)
+                self.item4 = self.canvas.create_image(150,350, image = tk_img4, anchor='s')
 
-                FILENAME = "/home/pi/project/cr.png"
+
+		self.e = Text(self.canvas,height=2,width=32,state=NORMAL)
+                self.e.place(x=120,y=250)
+                #self.e.geometry('30x30')
+                #self.e.pack(expand=YES)
+                #e.delete(0,END)
+                self.e.insert(END,"Combo's with: S LP, CR HP, C HK")
+
+		FILENAME = "/home/pi/project/bread+butter.png"
                 tk_img5= ImageTk.PhotoImage(file = FILENAME)
                 self.image3=tk_img5
                  #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
@@ -100,11 +114,94 @@ class GuiPart:
                 # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
                 self.item3 = self.canvas.create_image(80,120, image = tk_img5, anchor='w')
 
+		FILENAME = "/home/pi/project/sl lp.png"
+                tk_img6= ImageTk.PhotoImage(file = FILENAME)
+                self.image4=tk_img6
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                self.item5 = self.canvas.create_image(150,450, image = tk_img6, anchor='s')
+	def highLightCr_mp(self):
+		self.canvas.delete(self.item4)
+                self.canvas.delete(self.item3)
+		self.canvas.delete(self.item3)
+
+		
+
+		FILENAME = "/home/pi/project/bread+butter.png"
+                tk_img5= ImageTk.PhotoImage(file = FILENAME)
+                self.image3=tk_img5
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                self.item3 = self.canvas.create_image(80,120, image = tk_img5, anchor='w')
+
+		FILENAME = "/home/pi/project/cr lp.png"
+                tk_img4= ImageTk.PhotoImage(file = FILENAME)
+                self.image2=tk_img4
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                self.item4 = self.canvas.create_image(150,350, image = tk_img4, anchor='s')
+		
+		self.e = Text(self.canvas,height=2,width=32,state=NORMAL)
+                self.e.place(x=310,y=250)
+                #self.e.geometry('30x30')
+                #self.e.pack(expand=YES)
+                #e.delete(0,END)
+                self.e.insert(END,"Combo's with LP, CR MP, CR HK")
+
+		FILENAME = "/home/pi/project/sl lp2.png"
+                tk_img6= ImageTk.PhotoImage(file = FILENAME)
+                self.image4=tk_img6
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                self.item5 = self.canvas.create_image(150,450, image = tk_img6, anchor='s')
+
+	def choice(self):
+		self.canvas.delete(self.item4)
+                self.canvas.delete(self.item3)
+                self.canvas.delete(self.item3)
+		self.e.destroy()
+                root.update()
+
+		
+			
+		FILENAME = "/home/pi/project/cr lp2.png"
+                tk_img4= ImageTk.PhotoImage(file = FILENAME)
+                self.image2=tk_img4
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                self.item4 = self.canvas.create_image(150,350, image = tk_img4, anchor='s')
+
+
+
+		FILENAME = "/home/pi/project/sl lp2.png"
+                tk_img6= ImageTk.PhotoImage(file = FILENAME)
+                self.image4=tk_img6
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                self.item5 = self.canvas.create_image(150,450, image = tk_img6, anchor='s')
+		
+
+		FILENAME = "/home/pi/project/bread+butter.png"
+                tk_img7= ImageTk.PhotoImage(file = FILENAME)
+                self.image5=tk_img7
+                 #self.combo_button = tk.Button(root, image=tk_img3, command = self.start_reaction, anchor = 'w',
+                #                       width = 600, activebackground = "#33B5E5")
+                # self.combo_button_window = self.canvas.create_window(80,120,anchor='w', window= self.combo_button)    
+                self.item3 = self.canvas.create_image(80,120, image = tk_img7, anchor='w')
+		
+
 
 	def start_reaction(self):
 		self.canvas.delete(self.item3)
 		self.canvas.delete(self.item4)
-		
+		self.canvas.delete(self.item5)
+
 		
 		self.count_down()
 		return
@@ -116,7 +213,7 @@ class GuiPart:
 		while counter<=5:
 			
 			if counter == 0:
-                        	self.igm = PhotoImage(file="/home/pi/project/6.png")
+                        	self.igm = PhotoImage(file="/home/pi/project/1.png")
                         	self.image = self.igm;
                         	self.item2 = self.canvas.create_image(400,250, image = self.image, anchor=CENTER)
 
@@ -152,7 +249,7 @@ class GuiPart:
 	
 				
 		counter  = count()
-	def failure(self, words, words2, words3, words4):
+	def failure(self, words, words2, words3, words4,words5,words6):
 		
 		FILENAME = "/home/pi/project/fail.png"
                	tk_img6= ImageTk.PhotoImage(file = FILENAME)
@@ -161,16 +258,30 @@ class GuiPart:
 		#print words
 		self.e = Text(self.canvas,height=10,width=30,state=NORMAL)
 		self.e.place(x=410,y=280)
-		#self.e.geometry('30x30')
-		#self.e.pack(expand=YES)
-		#e.delete(0,END)
-		self.e.insert(END,"Time Taken in Seconds: "+ words)
-		self.e.insert(END, "\nTIme Taken in Seconds: " +words2);
-		self.e.insert(END, "\nFrames:" + words3 )
-		self.e.insert(END, "\nFrames: " +  words4 )
+		
+		if words4 == "Success":
+			
+			self.e.insert(END,"Link one: " + words2)
+			self.e.insert(END,"\nLink two: " + words4)
+			self.e.insert(END, "\nTime:  " + words)
+			self.e.insert(END, "\nFrames: " + words5);
+		elif words2 == "Success":
+			self.e.insert(END,"Link one: " + words2)
+			self.e.insert(END, "\nLink two: " + words4 )
+			self.e.insert(END, "\nTime: " +  words3)
+			self.e.insert(END, "\nFrames: " +  words6)
+		else:
+			self.e.insert(END,"Link one: " + words2)
+			self.e.insert(END, "\nTime:  " + words)
+                        self.e.insert(END, "\nFrames: " + words5);
+			self.e.insert(END,"\nLink two: " + words4)
+			self.e.insert(END, "\nTime:" +  words3)
+                        self.e.insert(END, "\nFrames:" +  words6)
+
+
 
 		root.update()
-                time.sleep(2)
+                time.sleep(5)
 		return
 	
 	def deleteItem(self):
@@ -185,12 +296,12 @@ class GuiPart:
 
 	def success(self):
 
-                FILENAME = "/home/pi/project/success.png"
+                FILENAME = "/home/pi/project/succ.png"
                 tk_img7= ImageTk.PhotoImage(file = FILENAME)
                 self.image2=tk_img7
                 self.item2 = self.canvas.create_image(400,250, image = tk_img7, anchor=CENTER,state=NORMAL)
                 root.update()
-                time.sleep(2)
+                time.sleep(5)
                 return
 
         def deleteSuccess(self):
@@ -198,15 +309,62 @@ class GuiPart:
                 root.update()
                 time.sleep(2)
                 return
+
+	def block(self, words, words2, words3, words4,words5,words6):
+
+                FILENAME = "/home/pi/project/block.png"
+                tk_img6= ImageTk.PhotoImage(file = FILENAME)
+                self.image=tk_img6
+                self.item6 = self.canvas.create_image(400,250, image = tk_img6, anchor=CENTER,state=NORMAL)
+                #print words
+                self.e = Text(self.canvas,height=10,width=30,state=NORMAL)
+                self.e.place(x=410,y=280)
+                #self.e.geometry('30x30')
+                #self.e.pack(expand=YES)
+                #e.delete(0,END)
+                if words4 == "Success":
+
+                        self.e.insert(END,"Link one: " + words2)
+                        self.e.insert(END,"\nLink two: " + words4)
+                        self.e.insert(END, "\nTime:  " + words)
+                        self.e.insert(END, "\nFrames: " + words5);
+                elif words2 == "Success":
+                        self.e.insert(END,"Link one: " + words2)
+                        self.e.insert(END, "\nLink two: " + words4 )
+                        self.e.insert(END, "\nTime: " +  words3)
+                        self.e.insert(END, "\nFrames: " +  words6)
+                else:
+                        self.e.insert(END,"Link one: " + words2)
+                        self.e.insert(END, "\nTime:  " + words)
+                        self.e.insert(END, "\nFrames: " + words5);
+                        self.e.insert(END,"\nLink two: " + words4)
+                        self.e.insert(END, "\nTime: " +  words3)
+                        self.e.insert(END, "\nFrames: " +  words6)
+
+
+
+                root.update()
+                time.sleep(5)
+                return
 	
+	def deleteBlock(self):
+                #self.e.config(state=DISABLED)
+                self.e.destroy()
+                root.update()
+                self.canvas.itemconfig(self.item6, state=HIDDEN)
+                root.update()
+                time.sleep(2)
+                return
+
+
 	def try_again(self):
-		FILENAME = "/home/pi/project/TRY.png"
+		FILENAME = "/home/pi/project/try.png"
                 tk_img7= ImageTk.PhotoImage(file = FILENAME)
                 self.image2=tk_img7
                 self.item2 = self.canvas.create_image(400,250, image = tk_img7, anchor=CENTER,state=NORMAL)
                 root.update()
 		
-		FILENAME = "/home/pi/project/goh.png"
+		FILENAME = "/home/pi/project/yes2.png"
                 tk_img8= ImageTk.PhotoImage(file = FILENAME)
                 self.image3=tk_img8
                 self.item3 = self.canvas.create_image(300,300, image = tk_img8, anchor=CENTER,state=NORMAL)
@@ -220,24 +378,33 @@ class GuiPart:
                 root.update()
 
 		time.sleep(2)
+		return
 
 	def try_button(self):
                 self.canvas.delete(self.item4)
 		
 		self.canvas.delete(self.item3)
 
-		FILENAME = "/home/pi/project/noh.png"
+		FILENAME = "/home/pi/project/no2.png"
                 tk_img9= ImageTk.PhotoImage(file = FILENAME)
                 self.image4=tk_img9
                 self.item4 = self.canvas.create_image(450,300, image = tk_img9, anchor=CENTER,state=NORMAL)
                 root.update()
 		
 		
-		FILENAME = "/home/pi/project/go.png"
+		FILENAME = "/home/pi/project/yes.png"
                 tk_img8= ImageTk.PhotoImage(file = FILENAME)
                 self.image3=tk_img8
                 self.item3 = self.canvas.create_image(300,300, image = tk_img8, anchor=CENTER,state=NORMAL)
                 root.update()
+
+	def deleteTry(self):
+		
+		self.canvas.delete(self.item2)
+		self.canvas.delete(self.item4)
+		self.canvas.delete(self.item3)
+		root.update()
+		return
 
 
 		
@@ -260,9 +427,78 @@ class GuiPart:
 				width =75,activebackground = "#33B5E5")
 		quit_button_window= canvas.create_window(20,20,anchor= 'w', window= quit_button)	
 	
+	def stats(self,list):
+		
+		self.canvas.delete(self.item2)
+                self.canvas.delete(self.item4)
+                self.canvas.delete(self.item3)
+                root.update()
+
+		FILENAME = "/home/pi/project/ms.png"
+                tk_img9= ImageTk.PhotoImage(file = FILENAME)
+                self.image4=tk_img9
+                self.item4 = self.canvas.create_image(450,150, image = tk_img9, anchor='w',state=NORMAL)
+              	
+
+
+                FILENAME = "/home/pi/project/f.png"
+                tk_img8= ImageTk.PhotoImage(file = FILENAME)
+                self.image3=tk_img8
+                self.item3 = self.canvas.create_image(300,150, image = tk_img8, anchor='w',state=NORMAL)
+                
+
+		stat = str(list)[1:-1]
+
+                output = stat.split(",")
+                print output
+
+
+		self.e = Text(self.canvas,height=10,width=50,state=NORMAL)
+                self.e.place(x=200,y=200)
+
+		self.e.insert(END,"1.   ")
+                self.e.insert(END, "    " + output[0])
+                self.e.insert(END, "    " + output[4])
+                self.e.insert(END, "    " + output[2])
+		self.e.insert(END, "    " + output[5])
+		self.e.insert(END,"\n2.   ")
+                self.e.insert(END, "    " + output[6])
+                self.e.insert(END, "    " + output[10])
+                self.e.insert(END, "    " + output[8])
+                self.e.insert(END, "    " + output[11])
+		self.e.insert(END,"\n3.   ")
+                self.e.insert(END, "    " + output[12])
+                self.e.insert(END, "    " + output[16])
+                self.e.insert(END, "    " + output[14])
+                self.e.insert(END, "    " + output[17])
+		self.e.insert(END,"\n4.   ")
+                self.e.insert(END, "    " + output[18])
+                self.e.insert(END, "    " + output[22])
+                self.e.insert(END, "    " + output[20])
+                self.e.insert(END, "    " + output[23])
+		self.e.insert(END,"\n5.   ")
+                self.e.insert(END, "    " + output[24])
+                self.e.insert(END, "    " + output[28])
+                self.e.insert(END, "    " + output[26])
+                self.e.insert(END, "    " + output[29])
+
+
 	
+		root.update() 
+
+
+		
+
+		#print list
+
+
+		#stat = str(list)[1:-1]
+
+		#output = stat.split(",")
+		#print len(output)
 
 	def processIncoming(self):
+		list = []
 		while self.queue.qsize():
 			try:
 				msg=self.queue.get(0)
@@ -275,6 +511,12 @@ class GuiPart:
 				
 				elif msg == 'highL':
 					self.highLight()
+				elif msg == 'choc2':
+					self.choice()
+
+				elif msg == 'hicom':
+					self.highLightCr_mp()
+				
 						
 				elif msg == 'combo':
 					state = 1
@@ -282,9 +524,11 @@ class GuiPart:
 					p = subprocess.Popen(['sudo','python','-u','./func_uart.py'],stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 					self.start_reaction()
 					test = 0
+					stats = " "
 					
 					for line in p.stdout.readline():
-						#print line
+						#list.append(line)
+						#print list
 					#print p.stdout.readline()	
 					
 						#state = False
@@ -294,22 +538,28 @@ class GuiPart:
 						#for line in io.TextIOWrapper(p.stdout,encoding="utf-8"):
 							#out = p.stdout.read(12)
 							out = p.stdout.readline()
-							p.stdout.flush()
-							print repr(out)
+							
+							#p.stdout.flush()
+							#list.append(out)
+							#print list
 							if out == 'start\n':
 								self.try_again()
 							if out == 'button\n':
 								#print "getting there"
 								self.try_button()
-
+							if out == 'ye\n':
+								self.deleteTry()
+							if out == 'no\n':
+								self.stats(list)
 												
 							if out ==  '' and p.poll() is not None:							
 								break
 						
 							if out:
+								print out
 								words = out.split(",")
 								#print words[0],words[1],words[2]	
-								
+								#list.append(words)
 								if words[0] == 'fail':
 									state = 2
 									time.sleep(0.5)
@@ -318,15 +568,44 @@ class GuiPart:
 								elif words[0] == 'succ':
 									state = 3
 									break
+								elif words[0]=='block':
+									state = 4
+									break
 							
 						rc = p.poll()
 						
 						if state==2:
-							self.failure(words[1],words[2],words[3],words[4])
+							list.append(words[1])
+							list.append(words[2])
+							list.append(words[3])
+							list.append(words[4])
+							list.append(words[5])
+							list.append(words[6])
+							#print list
+							self.failure(words[1],words[2],words[3],words[4],words[5],words[6])
 							self.deleteItem()
 						elif state == 3:
+							#list.append(words[1])
+                                                        #list.append(words[2])
+                                                        #list.append(words[3])
+                                                        #list.append(words[4])
+                                                        #list.append(words[5])
+                                                        #list.append(words[6])
+							#print list
 							self.success()
 							self.deleteSuccess()
+						elif state==4:
+							list.append(words[1])
+                                                        list.append(words[2])
+                                                        list.append(words[3])
+                                                        list.append(words[4])
+                                                        list.append(words[5])
+                                                        list.append(words[6])
+							#print list
+							self.block(words[1],words[2],words[3],words[4],words[5],words[6])
+							self.deleteBlock()
+
+			
 						state = 1
 					
 					#self.try_again()
