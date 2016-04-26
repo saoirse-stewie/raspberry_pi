@@ -3,6 +3,7 @@ import time
 import MySQLdb
 from decimal import *
 import sys
+import os
 
 ser = serial.Serial(port = "/dev/ttyAMA0",
 
@@ -31,13 +32,13 @@ def readlineCR(ser):
 		ser.flushInput()
 		
 		print data
-		if data  == "CR_MP CR_MP CR_HP" or data == "CR_LP ST_LP CL_LP":
+		if data  == "CR_MP CR_MP CR_HP" or data == "CR_LP ST_LP CL_LP" or data == "CR_LP CR_MP CL_LP":
 			words = data.split()
 			sqlfind = 'SELECT %s, %s, %s FROM STARTUP union SELECT %s, %s, %s FROM ACTIVE union SELECT %s, %s, %s  FROM RECOVERY;'  %(words[0] , words[1], words[2] , words[0], words[1],words[2], words[0], words[1], words[2])
 		
 			try: 
 				cur.execute(sqlfind)
-
+				print sqlfind
 							
 				for i in range (cur.rowcount):
 					
@@ -227,13 +228,13 @@ def reaction_record(state):
                                         one_frame = 1
 
 					
-					if int(first)<= 61 and int(first) > 0:
+					if int(first)<= 30 and int(first) > 0:
                                                 out = "succ,"
 
                                                 two_frame = two_frame - float(third)
                                                 one_frame = one_frame - float(fourth)
 
-                                                out +=  first + "," + "N/A" + "," + str(two_frame) + "," + "N/A"
+                                                out +=  first + ","  + "N/A" + "," + str(two_frame) + "," + "N/A" 
 
                                                 out = out.replace('\n',',').replace('\r',' ')
                                                 print out.rstrip(',')
@@ -250,20 +251,21 @@ def reaction_record(state):
                                                 two_frame =  two_frame- float(third)
                                                 one_frame = one_frame - float(fourth)
 
-                                                out +=  first + "," + "N/A" + "," + str(two_frame) + "," + "N/A"
+                                                out +=  first + "," + "too fast" + "," + "N/A" + "," + "N/A" + "," + str(two_frame) + "," + "N/A"
                                                 
 
                                                 out = out.replace('\n',',').replace('\r',' ')
                                                 print out.rstrip(',')
                                                 out = " "
 
-					elif int(first) > 61:
+					elif int(first) > 30:
                                                 out = "block,"
 
                                                 two_frame = two_frame - float(third)
                                                 one_frame = one_frame - float(fourth)
 
-                                                out +=  first + ","  + "N/A" + "," + str(two_frame) + "," + "N/A"
+                                                #out +=  first + ","  + "N/A" + "," + "too slow"  +"," + str(two_frame) + "," + "N/A" +"," +"N/A"
+						out +=  first + "," + "too slow" + "," + "N/A" + "," + "N/A" + "," + str(two_frame) + "," + "N/A"
 
                                                 
 
@@ -331,6 +333,10 @@ while True:
 		reaction_record(1)
 	elif try_again == "no":
 		print "no"
+	elif try_again == "st":
+		print "begin"
+		execfile("func_uart.py")
+		#os.execv(func_uart.py,sys.argv)
 		#count =0 
 		#sys.exit()
                 #break
